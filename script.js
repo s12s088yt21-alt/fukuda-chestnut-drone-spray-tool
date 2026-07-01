@@ -1,6 +1,5 @@
 const defaults = {
   product: "zimandaisen",
-  autoStandard: true,
   areaHa: 4,
   sprayLPer10a: 8,
   dilution: 10,
@@ -41,7 +40,7 @@ const products = {
   },
 };
 
-const inputIds = Object.keys(defaults).filter((id) => id !== "product" && id !== "autoStandard");
+const inputIds = Object.keys(defaults).filter((id) => id !== "product");
 const yen = new Intl.NumberFormat("ja-JP");
 
 function value(id) {
@@ -70,10 +69,6 @@ function selectedProduct() {
   return products[document.getElementById("product").value] || products.zimandaisen;
 }
 
-function isAutoStandard() {
-  return document.getElementById("autoStandard").checked;
-}
-
 function standardSprayLabel(product) {
   if (product.name === "フェニックスフロアブル") return "標準 4L/10a（登録 2〜4L/10a）";
   return `標準 ${product.sprayLPer10a}L/10a`;
@@ -85,18 +80,15 @@ function applyStandardValues() {
   document.getElementById("dilution").value = product.dilution;
 }
 
-function updateStandardMode() {
+function updateStandardLabels() {
   const product = selectedProduct();
-  const auto = isAutoStandard();
   const sprayInput = document.getElementById("sprayLPer10a");
   const dilutionInput = document.getElementById("dilution");
 
-  if (auto) applyStandardValues();
-
-  sprayInput.readOnly = auto;
-  dilutionInput.readOnly = auto;
-  sprayInput.closest(".input-row").classList.toggle("locked", auto);
-  dilutionInput.closest(".input-row").classList.toggle("locked", auto);
+  sprayInput.readOnly = true;
+  dilutionInput.readOnly = true;
+  sprayInput.closest(".input-row").classList.add("locked");
+  dilutionInput.closest(".input-row").classList.add("locked");
   setText("sprayStandardLabel", standardSprayLabel(product));
   setText("dilutionStandardLabel", `標準 ${product.dilution}倍`);
 }
@@ -120,7 +112,7 @@ function buildTankPlan(totalSprayL, tankL, dilution) {
 
 function calculate() {
   const product = selectedProduct();
-  updateStandardMode();
+  updateStandardLabels();
   const areaHa = value("areaHa");
   const sprayLPer10a = value("sprayLPer10a");
   const dilution = Math.max(1, value("dilution"));
@@ -179,7 +171,6 @@ function calculate() {
 
 function resetDefaults() {
   document.getElementById("product").value = defaults.product;
-  document.getElementById("autoStandard").checked = defaults.autoStandard;
   inputIds.forEach((id) => {
     document.getElementById(id).value = defaults[id];
   });
@@ -187,7 +178,7 @@ function resetDefaults() {
 }
 
 function applyProductDefaults() {
-  if (isAutoStandard()) applyStandardValues();
+  applyStandardValues();
   calculate();
 }
 
@@ -210,11 +201,11 @@ inputIds.forEach((id) => {
 });
 
 document.getElementById("product").addEventListener("change", applyProductDefaults);
-document.getElementById("autoStandard").addEventListener("change", calculate);
 document.getElementById("resetButton").addEventListener("click", resetDefaults);
 document.getElementById("printButton").addEventListener("click", () => window.print());
 document.querySelectorAll(".tab-button").forEach((button) => {
   button.addEventListener("click", () => switchTab(button.dataset.tab));
 });
 
+applyStandardValues();
 calculate();
