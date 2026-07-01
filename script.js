@@ -112,6 +112,7 @@ function buildTankPlan(totalSprayL, tankL, dilution) {
 
 function calculate() {
   const product = selectedProduct();
+  applyStandardValues();
   updateStandardLabels();
   const areaHa = value("areaHa");
   const sprayLPer10a = value("sprayLPer10a");
@@ -154,7 +155,7 @@ function calculate() {
   setText("timeCapacity", `${round(haPerHour, 1)} ha/時`);
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
-  setText("updatedAt", "自動計算");
+  setText("updatedAt", "自動計算 v2");
 
   document.getElementById("tankPlan").innerHTML = tankPlan.map((item) => `
     <div class="tank-item">
@@ -200,7 +201,9 @@ inputIds.forEach((id) => {
   document.getElementById(id).addEventListener("input", calculate);
 });
 
-document.getElementById("product").addEventListener("change", applyProductDefaults);
+["change", "input", "blur"].forEach((eventName) => {
+  document.getElementById("product").addEventListener(eventName, applyProductDefaults);
+});
 document.getElementById("resetButton").addEventListener("click", resetDefaults);
 document.getElementById("printButton").addEventListener("click", () => window.print());
 document.querySelectorAll(".tab-button").forEach((button) => {
