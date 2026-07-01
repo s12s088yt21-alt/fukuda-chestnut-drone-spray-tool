@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>福田観光栗園 防除計算ツール</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app">
+    <section class="panel intro">
+      <div>
+        <p class="eyebrow">福田観光栗園 / くり / ドローン散布</p>
+        <h1>防除計算ツール</h1>
+        <p class="lead">面積、希釈倍率、散布液量、タンク容量、作業条件を入れると、平米あたり・10aあたり・全体量・タンク回数・所要時間の目安を計算します。</p>
+      </div>
+      <button class="print-button" type="button" id="printButton" aria-label="印刷">印刷</button>
+    </section>
+
+    <section class="grid">
+      <form class="panel form" id="calcForm">
+        <div class="section-title">
+          <h2>基本条件</h2>
+          <button type="button" id="resetButton">初期値</button>
+        </div>
+
+        <label>
+          <span>使用薬剤</span>
+          <select id="product">
+            <option value="zimandaisen">ジマンダイセン水和剤</option>
+            <option value="diana">ディアナWDG</option>
+            <option value="phoenix">フェニックスフロアブル</option>
+          </select>
+        </label>
+
+        <div class="product-info" id="productInfo">
+          <strong id="productPurpose">実炭疽病防除</strong>
+          <span id="productMeta">10倍 / 8L/10a / 収穫7日前まで / 2回以内</span>
+        </div>
+
+        <label class="toggle-row">
+          <input type="checkbox" id="autoStandard" checked>
+          <span>薬剤ごとの標準値を自動入力</span>
+        </label>
+
+        <label>
+          <span>圃場面積</span>
+          <div class="input-row">
+            <input type="number" id="areaHa" value="4" min="0" step="0.01" inputmode="decimal">
+            <span>ha</span>
+          </div>
+        </label>
+
+        <label>
+          <span class="label-line">散布液量 <small id="sprayStandardLabel">標準 8L/10a</small></span>
+          <div class="input-row">
+            <input type="number" id="sprayLPer10a" value="8" min="0" step="0.1" inputmode="decimal">
+            <span>L/10a</span>
+          </div>
+        </label>
+
+        <label>
+          <span class="label-line">希釈倍率 <small id="dilutionStandardLabel">標準 10倍</small></span>
+          <div class="input-row">
+            <input type="number" id="dilution" value="10" min="1" step="1" inputmode="numeric">
+            <span>倍</span>
+          </div>
+        </label>
+
+        <label>
+          <span>タンク容量</span>
+          <div class="input-row">
+            <input type="number" id="tankL" value="70" min="1" step="1" inputmode="numeric">
+            <span>L</span>
+          </div>
+        </label>
+
+      </form>
+
+      <section class="panel results" aria-live="polite">
+        <div class="section-title">
+          <h2>計算結果</h2>
+          <span id="updatedAt"></span>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="計算結果の切り替え">
+          <button type="button" class="tab-button active" id="liquidTabButton" data-tab="liquid" role="tab" aria-selected="true" aria-controls="liquidPanel">薬液計算</button>
+          <button type="button" class="tab-button" id="timeTabButton" data-tab="time" role="tab" aria-selected="false" aria-controls="timePanel">時間計算</button>
+        </div>
+
+        <div class="tab-panel active" id="liquidPanel" role="tabpanel" aria-labelledby="liquidTabButton">
+          <div class="result-cards">
+            <article>
+              <span>全体の完成薬液</span>
+              <strong id="totalSpray">320 L</strong>
+            </article>
+            <article>
+              <span>必要薬剤量</span>
+              <strong id="totalChemical">32 kg</strong>
+            </article>
+            <article>
+              <span>水の目安</span>
+              <strong id="totalWater">約288 L</strong>
+            </article>
+            <article>
+              <span>タンク回数</span>
+              <strong id="turnCount">5 回</strong>
+            </article>
+          </div>
+
+          <table>
+            <tbody>
+              <tr>
+                <th>1m²あたり完成薬液</th>
+                <td id="sprayPerM2">8 mL</td>
+              </tr>
+              <tr>
+                <th>1m²あたり薬剤量</th>
+                <td id="chemicalPerM2">0.8 g</td>
+              </tr>
+              <tr>
+                <th>10aあたり薬剤量</th>
+                <td id="chemicalPer10a">0.8 kg</td>
+              </tr>
+              <tr>
+                <th>登録・使用条件</th>
+                <td id="productCondition">10倍 / 8L/10a / 収穫7日前まで / 2回以内</td>
+              </tr>
+              <tr>
+                <th>散布面積</th>
+                <td id="areaDetail">4 ha / 400 a / 40区画 / 40,000 m²</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="mixing">
+            <h2>タンク別の作成量</h2>
+            <div id="tankPlan"></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="timePanel" role="tabpanel" aria-labelledby="timeTabButton" hidden>
+          <div class="time-layout">
+            <div class="time-inputs">
+              <div class="section-title compact-title">
+                <h2>時間条件</h2>
+                <span class="hint">未確定なら仮の値でOK</span>
+              </div>
+
+              <label>
+                <span>実散布の処理能力</span>
+                <div class="input-row">
+                  <input type="number" id="haPerHour" value="2" min="0.1" step="0.1" inputmode="decimal">
+                  <span>ha/時</span>
+                </div>
+              </label>
+
+              <label>
+                <span>薬液作成・補給</span>
+                <div class="input-row">
+                  <input type="number" id="refillMin" value="10" min="0" step="1" inputmode="numeric">
+                  <span>分/回</span>
+                </div>
+              </label>
+
+              <label>
+                <span>移動・確認・電池交換など</span>
+                <div class="input-row">
+                  <input type="number" id="turnBufferMin" value="5" min="0" step="1" inputmode="numeric">
+                  <span>分/回</span>
+                </div>
+              </label>
+
+              <label>
+                <span>準備・片付け・洗浄</span>
+                <div class="input-row">
+                  <input type="number" id="setupCleanupMin" value="60" min="0" step="5" inputmode="numeric">
+                  <span>分</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="time-results">
+              <div class="result-cards time-cards">
+                <article>
+                  <span>実散布時間</span>
+                  <strong id="flightTime">約2時間00分</strong>
+                </article>
+                <article>
+                  <span>補給・段取り込み</span>
+                  <strong id="workTime">約3時間15分</strong>
+                </article>
+              </div>
+
+              <table>
+                <tbody>
+                  <tr>
+                    <th>散布面積</th>
+                    <td id="timeAreaDetail">4 ha / 400 a / 10a×40区画</td>
+                  </tr>
+                  <tr>
+                    <th>タンク回数</th>
+                    <td id="timeTurnCount">5 回</td>
+                  </tr>
+                  <tr>
+                    <th>実散布の処理能力</th>
+                    <td id="timeCapacity">2 ha/時</td>
+                  </tr>
+                  <tr>
+                    <th>補給・段取り時間</th>
+                    <td id="timeBuffer">15 分/回</td>
+                  </tr>
+                  <tr>
+                    <th>準備・片付け・洗浄</th>
+                    <td id="timeSetupCleanup">60 分</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel notes">
+      <h2>現場メモ</h2>
+      <ul>
+        <li>水を先に入れ、薬剤は撹拌しながら少しずつ入れる。</li>
+        <li>「水を何L」よりも、最後に完成薬液量へ合わせる。</li>
+        <li>粉剤は沈殿しやすいため、散布前・補給前・作業途中も撹拌を確認する。</li>
+        <li>防除衣、手袋、マスク、保護メガネを着用する。</li>
+        <li>散布前にラベル、JA、農薬登録情報で登録内容と使用条件を最終確認する。</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>

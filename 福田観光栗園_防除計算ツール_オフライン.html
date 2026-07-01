@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>福田観光栗園 防除計算ツール</title>
+  <style>
+:root {
+  --bg: #f5f7f4;
+  --panel: #ffffff;
+  --text: #1f2a24;
+  --muted: #5d6b62;
+  --line: #dce4dc;
+  --accent: #146c43;
+  --accent-2: #0f766e;
+  --warn: #8a5a0a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Meiryo", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  font-size: 16px;
+}
+
+.app {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 calc(40px + env(safe-area-inset-bottom));
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(31, 42, 36, 0.06);
+}
+
+.intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 8px;
+  font-size: clamp(28px, 5vw, 42px);
+  line-height: 1.15;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: 18px;
+}
+
+.lead {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.form,
+.results,
+.notes {
+  padding: 20px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.work-title {
+  margin-top: 28px;
+}
+
+.compact-title {
+  margin-bottom: 12px;
+}
+
+.hint,
+#updatedAt {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+label {
+  display: block;
+  margin-bottom: 14px;
+}
+
+label > span {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+label > .label-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.label-line small {
+  color: var(--accent-2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.toggle-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfb;
+}
+
+.toggle-row input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.toggle-row span {
+  margin: 0;
+  font-weight: 700;
+}
+
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-height: 48px;
+  padding: 12px;
+  background: #fbfcfb;
+  color: var(--text);
+}
+
+.product-info {
+  margin: -2px 0 16px;
+  padding: 12px;
+  border: 1px solid #c9ded2;
+  border-radius: 8px;
+  background: #f1f8f4;
+}
+
+.product-info strong,
+.product-info span {
+  display: block;
+}
+
+.product-info strong {
+  margin-bottom: 4px;
+}
+
+.product-info span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fbfcfb;
+}
+
+.input-row input {
+  width: 100%;
+  border: 0;
+  min-height: 48px;
+  padding: 12px;
+  background: transparent;
+  color: var(--text);
+}
+
+.input-row span {
+  min-width: 72px;
+  padding: 0 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.input-row.locked {
+  background: #eef6f1;
+}
+
+.input-row.locked input {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+button {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  min-height: 44px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+#resetButton {
+  background: #fff;
+  color: var(--accent);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin-bottom: 18px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f3f6f3;
+}
+
+.tab-button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 6px;
+}
+
+.tab-button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+.result-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.result-cards article {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fbfcfb;
+}
+
+.result-cards span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.result-cards strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.time-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.time-inputs {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfb;
+}
+
+.time-inputs label:last-child {
+  margin-bottom: 0;
+}
+
+.time-cards {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  padding: 11px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+th {
+  width: 42%;
+  color: var(--muted);
+  text-align: left;
+  font-weight: 700;
+}
+
+td {
+  text-align: right;
+  font-weight: 700;
+}
+
+.mixing h2,
+.notes h2 {
+  margin-bottom: 12px;
+}
+
+.tank-item {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.tank-item:first-child {
+  border-top: 0;
+}
+
+.tank-label {
+  color: var(--accent-2);
+  font-weight: 800;
+}
+
+.tank-detail {
+  color: var(--muted);
+}
+
+.notes {
+  margin-top: 16px;
+}
+
+.notes ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.notes li + li {
+  margin-top: 6px;
+}
+
+@media (max-width: 880px) {
+  .grid,
+  .time-layout,
+  .time-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .result-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .intro {
+    display: block;
+  }
+
+  .print-button {
+    margin-top: 16px;
+  }
+
+  th,
+  td {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+
+  td {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .app {
+    width: min(100% - 20px, 460px);
+    padding-top: 10px;
+  }
+
+  .intro,
+  .form,
+  .results,
+  .notes {
+    padding: 14px;
+  }
+
+  .intro {
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 17px;
+  }
+
+  .lead {
+    font-size: 14px;
+  }
+
+  .grid {
+    gap: 10px;
+  }
+
+  .section-title {
+    align-items: flex-start;
+  }
+
+  label > .label-line {
+    display: block;
+  }
+
+  .label-line small {
+    display: block;
+    margin-top: 2px;
+  }
+
+  .result-cards {
+    gap: 8px;
+  }
+
+  .result-cards article {
+    padding: 12px;
+  }
+
+  .result-cards strong {
+    font-size: 21px;
+  }
+
+  .tabs {
+    margin-left: -2px;
+    margin-right: -2px;
+  }
+
+  .tab-button {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  th,
+  td {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .tank-item {
+    grid-template-columns: 64px 1fr;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .app {
+    width: 100%;
+    padding: 0;
+  }
+
+  .panel {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  button {
+    display: none;
+  }
+}
+
+</style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel intro">
+      <div>
+        <p class="eyebrow">福田観光栗園 / くり / ドローン散布</p>
+        <h1>防除計算ツール</h1>
+        <p class="lead">面積、希釈倍率、散布液量、タンク容量、作業条件を入れると、平米あたり・10aあたり・全体量・タンク回数・所要時間の目安を計算します。</p>
+      </div>
+      <button class="print-button" type="button" id="printButton" aria-label="印刷">印刷</button>
+    </section>
+
+    <section class="grid">
+      <form class="panel form" id="calcForm">
+        <div class="section-title">
+          <h2>基本条件</h2>
+          <button type="button" id="resetButton">初期値</button>
+        </div>
+
+        <label>
+          <span>使用薬剤</span>
+          <select id="product">
+            <option value="zimandaisen">ジマンダイセン水和剤</option>
+            <option value="diana">ディアナWDG</option>
+            <option value="phoenix">フェニックスフロアブル</option>
+          </select>
+        </label>
+
+        <div class="product-info" id="productInfo">
+          <strong id="productPurpose">実炭疽病防除</strong>
+          <span id="productMeta">10倍 / 8L/10a / 収穫7日前まで / 2回以内</span>
+        </div>
+
+        <label class="toggle-row">
+          <input type="checkbox" id="autoStandard" checked>
+          <span>薬剤ごとの標準値を自動入力</span>
+        </label>
+
+        <label>
+          <span>圃場面積</span>
+          <div class="input-row">
+            <input type="number" id="areaHa" value="4" min="0" step="0.01" inputmode="decimal">
+            <span>ha</span>
+          </div>
+        </label>
+
+        <label>
+          <span class="label-line">散布液量 <small id="sprayStandardLabel">標準 8L/10a</small></span>
+          <div class="input-row">
+            <input type="number" id="sprayLPer10a" value="8" min="0" step="0.1" inputmode="decimal">
+            <span>L/10a</span>
+          </div>
+        </label>
+
+        <label>
+          <span class="label-line">希釈倍率 <small id="dilutionStandardLabel">標準 10倍</small></span>
+          <div class="input-row">
+            <input type="number" id="dilution" value="10" min="1" step="1" inputmode="numeric">
+            <span>倍</span>
+          </div>
+        </label>
+
+        <label>
+          <span>タンク容量</span>
+          <div class="input-row">
+            <input type="number" id="tankL" value="70" min="1" step="1" inputmode="numeric">
+            <span>L</span>
+          </div>
+        </label>
+
+      </form>
+
+      <section class="panel results" aria-live="polite">
+        <div class="section-title">
+          <h2>計算結果</h2>
+          <span id="updatedAt"></span>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="計算結果の切り替え">
+          <button type="button" class="tab-button active" id="liquidTabButton" data-tab="liquid" role="tab" aria-selected="true" aria-controls="liquidPanel">薬液計算</button>
+          <button type="button" class="tab-button" id="timeTabButton" data-tab="time" role="tab" aria-selected="false" aria-controls="timePanel">時間計算</button>
+        </div>
+
+        <div class="tab-panel active" id="liquidPanel" role="tabpanel" aria-labelledby="liquidTabButton">
+          <div class="result-cards">
+            <article>
+              <span>全体の完成薬液</span>
+              <strong id="totalSpray">320 L</strong>
+            </article>
+            <article>
+              <span>必要薬剤量</span>
+              <strong id="totalChemical">32 kg</strong>
+            </article>
+            <article>
+              <span>水の目安</span>
+              <strong id="totalWater">約288 L</strong>
+            </article>
+            <article>
+              <span>タンク回数</span>
+              <strong id="turnCount">5 回</strong>
+            </article>
+          </div>
+
+          <table>
+            <tbody>
+              <tr>
+                <th>1m²あたり完成薬液</th>
+                <td id="sprayPerM2">8 mL</td>
+              </tr>
+              <tr>
+                <th>1m²あたり薬剤量</th>
+                <td id="chemicalPerM2">0.8 g</td>
+              </tr>
+              <tr>
+                <th>10aあたり薬剤量</th>
+                <td id="chemicalPer10a">0.8 kg</td>
+              </tr>
+              <tr>
+                <th>登録・使用条件</th>
+                <td id="productCondition">10倍 / 8L/10a / 収穫7日前まで / 2回以内</td>
+              </tr>
+              <tr>
+                <th>散布面積</th>
+                <td id="areaDetail">4 ha / 400 a / 40区画 / 40,000 m²</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="mixing">
+            <h2>タンク別の作成量</h2>
+            <div id="tankPlan"></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="timePanel" role="tabpanel" aria-labelledby="timeTabButton" hidden>
+          <div class="time-layout">
+            <div class="time-inputs">
+              <div class="section-title compact-title">
+                <h2>時間条件</h2>
+                <span class="hint">未確定なら仮の値でOK</span>
+              </div>
+
+              <label>
+                <span>実散布の処理能力</span>
+                <div class="input-row">
+                  <input type="number" id="haPerHour" value="2" min="0.1" step="0.1" inputmode="decimal">
+                  <span>ha/時</span>
+                </div>
+              </label>
+
+              <label>
+                <span>薬液作成・補給</span>
+                <div class="input-row">
+                  <input type="number" id="refillMin" value="10" min="0" step="1" inputmode="numeric">
+                  <span>分/回</span>
+                </div>
+              </label>
+
+              <label>
+                <span>移動・確認・電池交換など</span>
+                <div class="input-row">
+                  <input type="number" id="turnBufferMin" value="5" min="0" step="1" inputmode="numeric">
+                  <span>分/回</span>
+                </div>
+              </label>
+
+              <label>
+                <span>準備・片付け・洗浄</span>
+                <div class="input-row">
+                  <input type="number" id="setupCleanupMin" value="60" min="0" step="5" inputmode="numeric">
+                  <span>分</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="time-results">
+              <div class="result-cards time-cards">
+                <article>
+                  <span>実散布時間</span>
+                  <strong id="flightTime">約2時間00分</strong>
+                </article>
+                <article>
+                  <span>補給・段取り込み</span>
+                  <strong id="workTime">約3時間15分</strong>
+                </article>
+              </div>
+
+              <table>
+                <tbody>
+                  <tr>
+                    <th>散布面積</th>
+                    <td id="timeAreaDetail">4 ha / 400 a / 10a×40区画</td>
+                  </tr>
+                  <tr>
+                    <th>タンク回数</th>
+                    <td id="timeTurnCount">5 回</td>
+                  </tr>
+                  <tr>
+                    <th>実散布の処理能力</th>
+                    <td id="timeCapacity">2 ha/時</td>
+                  </tr>
+                  <tr>
+                    <th>補給・段取り時間</th>
+                    <td id="timeBuffer">15 分/回</td>
+                  </tr>
+                  <tr>
+                    <th>準備・片付け・洗浄</th>
+                    <td id="timeSetupCleanup">60 分</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel notes">
+      <h2>現場メモ</h2>
+      <ul>
+        <li>水を先に入れ、薬剤は撹拌しながら少しずつ入れる。</li>
+        <li>「水を何L」よりも、最後に完成薬液量へ合わせる。</li>
+        <li>粉剤は沈殿しやすいため、散布前・補給前・作業途中も撹拌を確認する。</li>
+        <li>防除衣、手袋、マスク、保護メガネを着用する。</li>
+        <li>散布前にラベル、JA、農薬登録情報で登録内容と使用条件を最終確認する。</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+const defaults = {
+  product: "zimandaisen",
+  autoStandard: true,
+  areaHa: 4,
+  sprayLPer10a: 8,
+  dilution: 10,
+  tankL: 70,
+  haPerHour: 2,
+  refillMin: 10,
+  turnBufferMin: 5,
+  setupCleanupMin: 60,
+};
+
+const products = {
+  zimandaisen: {
+    name: "ジマンダイセン水和剤",
+    purpose: "くりの実炭疽病防除",
+    target: "実炭疽病",
+    dilution: 10,
+    sprayLPer10a: 8,
+    amountUnit: "kg",
+    condition: "10倍 / 8L/10a / 収穫7日前まで / 2回以内",
+  },
+  diana: {
+    name: "ディアナWDG",
+    purpose: "モモノゴマダラノメイガ防除",
+    target: "モモノゴマダラノメイガ",
+    dilution: 100,
+    sprayLPer10a: 2,
+    amountUnit: "kg",
+    condition: "100倍 / 2L/10a / 収穫前日まで / 2回以内",
+  },
+  phoenix: {
+    name: "フェニックスフロアブル",
+    purpose: "モモノゴマダラノメイガ・クスサン防除",
+    target: "モモノゴマダラノメイガ、クスサン",
+    dilution: 40,
+    sprayLPer10a: 4,
+    amountUnit: "L",
+    condition: "40倍 / 2〜4L/10a / 収穫前日まで / 2回以内",
+  },
+};
+
+const inputIds = Object.keys(defaults).filter((id) => id !== "product" && id !== "autoStandard");
+const yen = new Intl.NumberFormat("ja-JP");
+
+function value(id) {
+  const number = Number(document.getElementById(id).value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function round(value, digits = 1) {
+  const base = 10 ** digits;
+  return Math.round(value * base) / base;
+}
+
+function formatMinutes(totalMinutes) {
+  const minutes = Math.max(0, Math.round(totalMinutes));
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `約${m}分`;
+  return `約${h}時間${String(m).padStart(2, "0")}分`;
+}
+
+function setText(id, text) {
+  document.getElementById(id).textContent = text;
+}
+
+function selectedProduct() {
+  return products[document.getElementById("product").value] || products.zimandaisen;
+}
+
+function isAutoStandard() {
+  return document.getElementById("autoStandard").checked;
+}
+
+function standardSprayLabel(product) {
+  if (product.name === "フェニックスフロアブル") return "標準 4L/10a（登録 2〜4L/10a）";
+  return `標準 ${product.sprayLPer10a}L/10a`;
+}
+
+function applyStandardValues() {
+  const product = selectedProduct();
+  document.getElementById("sprayLPer10a").value = product.sprayLPer10a;
+  document.getElementById("dilution").value = product.dilution;
+}
+
+function updateStandardMode() {
+  const product = selectedProduct();
+  const auto = isAutoStandard();
+  const sprayInput = document.getElementById("sprayLPer10a");
+  const dilutionInput = document.getElementById("dilution");
+
+  if (auto) applyStandardValues();
+
+  sprayInput.readOnly = auto;
+  dilutionInput.readOnly = auto;
+  sprayInput.closest(".input-row").classList.toggle("locked", auto);
+  dilutionInput.closest(".input-row").classList.toggle("locked", auto);
+  setText("sprayStandardLabel", standardSprayLabel(product));
+  setText("dilutionStandardLabel", `標準 ${product.dilution}倍`);
+}
+
+function buildTankPlan(totalSprayL, tankL, dilution) {
+  const plan = [];
+  let remaining = totalSprayL;
+  let count = 1;
+
+  while (remaining > 0.0001) {
+    const amount = Math.min(tankL, remaining);
+    const chemicalKg = amount / dilution;
+    const waterL = amount - chemicalKg;
+    plan.push({ count, amount, chemicalKg, waterL });
+    remaining -= amount;
+    count += 1;
+  }
+
+  return plan;
+}
+
+function calculate() {
+  const product = selectedProduct();
+  updateStandardMode();
+  const areaHa = value("areaHa");
+  const sprayLPer10a = value("sprayLPer10a");
+  const dilution = Math.max(1, value("dilution"));
+  const tankL = Math.max(1, value("tankL"));
+  const haPerHour = Math.max(0.1, value("haPerHour"));
+  const refillMin = value("refillMin");
+  const turnBufferMin = value("turnBufferMin");
+  const setupCleanupMin = value("setupCleanupMin");
+
+  const areaA = areaHa * 100;
+  const areaM2 = areaHa * 10000;
+  const blocks10a = areaA / 10;
+  const totalSprayL = blocks10a * sprayLPer10a;
+  const totalChemicalKg = totalSprayL / dilution;
+  const totalWaterL = totalSprayL - totalChemicalKg;
+  const sprayMlPerM2 = areaM2 > 0 ? (totalSprayL * 1000) / areaM2 : 0;
+  const chemicalGPerM2 = areaM2 > 0 ? (totalChemicalKg * 1000) / areaM2 : 0;
+  const chemicalKgPer10a = sprayLPer10a / dilution;
+  const tankPlan = buildTankPlan(totalSprayL, tankL, dilution);
+  const tankCount = tankPlan.length;
+  const flightMin = (areaHa / haPerHour) * 60;
+  const workMin = flightMin + tankCount * (refillMin + turnBufferMin) + setupCleanupMin;
+
+  setText("totalSpray", `${round(totalSprayL, 1)} L`);
+  setText("totalChemical", `${round(totalChemicalKg, 2)} ${product.amountUnit}`);
+  setText("totalWater", `約${round(totalWaterL, 1)} L`);
+  setText("turnCount", `${tankCount} 回`);
+  setText("sprayPerM2", `${round(sprayMlPerM2, 2)} mL`);
+  setText("chemicalPerM2", `${round(chemicalGPerM2, 3)} ${product.amountUnit === "L" ? "mL" : "g"}`);
+  setText("chemicalPer10a", `${round(chemicalKgPer10a, 3)} ${product.amountUnit}`);
+  setText("productPurpose", product.purpose);
+  setText("productMeta", product.condition);
+  setText("productCondition", product.condition);
+  setText("areaDetail", `${round(areaHa, 2)} ha / ${round(areaA, 1)} a / 10a×${round(blocks10a, 1)}区画 / ${yen.format(Math.round(areaM2))} m²`);
+  setText("flightTime", formatMinutes(flightMin));
+  setText("workTime", formatMinutes(workMin));
+  setText("timeAreaDetail", `${round(areaHa, 2)} ha / ${round(areaA, 1)} a / 10a×${round(blocks10a, 1)}区画`);
+  setText("timeTurnCount", `${tankCount} 回`);
+  setText("timeCapacity", `${round(haPerHour, 1)} ha/時`);
+  setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
+  setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
+  setText("updatedAt", "自動計算");
+
+  document.getElementById("tankPlan").innerHTML = tankPlan.map((item) => `
+    <div class="tank-item">
+      <div class="tank-label">${item.count}回目</div>
+      <div>
+        <strong>完成薬液 ${round(item.amount, 1)}L</strong>
+        <div class="tank-detail">
+          薬剤 ${round(item.chemicalKg, 2)}${product.amountUnit}、水は目安 ${round(item.waterL, 1)}L。水を先に入れて薬剤を少しずつ投入し、最後に完成薬液量へ合わせる。
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function resetDefaults() {
+  document.getElementById("product").value = defaults.product;
+  document.getElementById("autoStandard").checked = defaults.autoStandard;
+  inputIds.forEach((id) => {
+    document.getElementById(id).value = defaults[id];
+  });
+  calculate();
+}
+
+function applyProductDefaults() {
+  if (isAutoStandard()) applyStandardValues();
+  calculate();
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll(".tab-button").forEach((button) => {
+    const active = button.dataset.tab === tabName;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+
+  document.querySelectorAll(".tab-panel").forEach((panel) => {
+    const active = panel.id === `${tabName}Panel`;
+    panel.classList.toggle("active", active);
+    panel.hidden = !active;
+  });
+}
+
+inputIds.forEach((id) => {
+  document.getElementById(id).addEventListener("input", calculate);
+});
+
+document.getElementById("product").addEventListener("change", applyProductDefaults);
+document.getElementById("autoStandard").addEventListener("change", calculate);
+document.getElementById("resetButton").addEventListener("click", resetDefaults);
+document.getElementById("printButton").addEventListener("click", () => window.print());
+document.querySelectorAll(".tab-button").forEach((button) => {
+  button.addEventListener("click", () => switchTab(button.dataset.tab));
+});
+
+calculate();
+
+</script>
+</body>
+</html>
