@@ -171,6 +171,36 @@ select {
   color: var(--text);
 }
 
+.product-choice {
+  margin-bottom: 14px;
+}
+
+.product-choice > span {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.product-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.product-button {
+  min-height: 52px;
+  border-color: var(--line);
+  background: #fbfcfb;
+  color: var(--text);
+  text-align: left;
+}
+
+.product-button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
 .product-info {
   margin: -2px 0 16px;
   padding: 12px;

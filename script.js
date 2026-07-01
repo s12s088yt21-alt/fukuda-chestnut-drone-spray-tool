@@ -42,6 +42,7 @@ const products = {
 
 const inputIds = Object.keys(defaults).filter((id) => id !== "product");
 const yen = new Intl.NumberFormat("ja-JP");
+let currentProductKey = defaults.product;
 
 function value(id) {
   const number = Number(document.getElementById(id).value);
@@ -66,7 +67,7 @@ function setText(id, text) {
 }
 
 function selectedProduct() {
-  return products[document.getElementById("product").value] || products.zimandaisen;
+  return products[currentProductKey] || products.zimandaisen;
 }
 
 function standardSprayLabel(product) {
@@ -78,6 +79,14 @@ function applyStandardValues() {
   const product = selectedProduct();
   document.getElementById("sprayLPer10a").value = product.sprayLPer10a;
   document.getElementById("dilution").value = product.dilution;
+}
+
+function updateProductButtons() {
+  document.querySelectorAll(".product-button").forEach((button) => {
+    const active = button.dataset.product === currentProductKey;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
 }
 
 function updateStandardLabels() {
@@ -171,7 +180,8 @@ function calculate() {
 }
 
 function resetDefaults() {
-  document.getElementById("product").value = defaults.product;
+  currentProductKey = defaults.product;
+  updateProductButtons();
   inputIds.forEach((id) => {
     document.getElementById(id).value = defaults[id];
   });
@@ -181,6 +191,12 @@ function resetDefaults() {
 function applyProductDefaults() {
   applyStandardValues();
   calculate();
+}
+
+function selectProduct(productKey) {
+  currentProductKey = products[productKey] ? productKey : defaults.product;
+  updateProductButtons();
+  applyProductDefaults();
 }
 
 function switchTab(tabName) {
@@ -201,8 +217,12 @@ inputIds.forEach((id) => {
   document.getElementById(id).addEventListener("input", calculate);
 });
 
-["change", "input", "blur"].forEach((eventName) => {
-  document.getElementById("product").addEventListener(eventName, applyProductDefaults);
+document.querySelectorAll(".product-button").forEach((button) => {
+  button.addEventListener("click", () => selectProduct(button.dataset.product));
+  button.addEventListener("touchend", (event) => {
+    event.preventDefault();
+    selectProduct(button.dataset.product);
+  });
 });
 document.getElementById("resetButton").addEventListener("click", resetDefaults);
 document.getElementById("printButton").addEventListener("click", () => window.print());
@@ -210,5 +230,6 @@ document.querySelectorAll(".tab-button").forEach((button) => {
   button.addEventListener("click", () => switchTab(button.dataset.tab));
 });
 
+updateProductButtons();
 applyStandardValues();
 calculate();

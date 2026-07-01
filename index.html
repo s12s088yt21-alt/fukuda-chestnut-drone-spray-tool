@@ -24,14 +24,14 @@
           <button type="button" id="resetButton">初期値</button>
         </div>
 
-        <label>
+        <div class="product-choice">
           <span>使用薬剤</span>
-          <select id="product">
-            <option value="zimandaisen">ジマンダイセン水和剤</option>
-            <option value="diana">ディアナWDG</option>
-            <option value="phoenix">フェニックスフロアブル</option>
-          </select>
-        </label>
+          <div class="product-buttons" role="group" aria-label="使用薬剤">
+            <button type="button" class="product-button active" data-product="zimandaisen" aria-pressed="true">ジマンダイセン</button>
+            <button type="button" class="product-button" data-product="diana" aria-pressed="false">ディアナ</button>
+            <button type="button" class="product-button" data-product="phoenix" aria-pressed="false">フェニックス</button>
+          </div>
+        </div>
 
         <div class="product-info" id="productInfo">
           <strong id="productPurpose">実炭疽病防除</strong>
