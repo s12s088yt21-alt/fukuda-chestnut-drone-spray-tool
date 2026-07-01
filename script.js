@@ -164,7 +164,7 @@ function calculate() {
   setText("timeCapacity", `${round(haPerHour, 1)} ha/時`);
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
-  setText("updatedAt", "自動計算 v2");
+  setText("updatedAt", "Web版 v4");
 
   document.getElementById("tankPlan").innerHTML = tankPlan.map((item) => `
     <div class="tank-item">
@@ -233,3 +233,9 @@ document.querySelectorAll(".tab-button").forEach((button) => {
 updateProductButtons();
 applyStandardValues();
 calculate();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}

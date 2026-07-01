@@ -1,0 +1,8 @@
+{
+  "name": "福田観光栗園 防除計算ツール",
+  "short_name": "防除計算",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f4",
+  "theme_color": "#146c43"
+}
