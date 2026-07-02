@@ -1,9 +1,9 @@
-const CACHE_NAME = "fukuda-spray-tool-v5";
+const CACHE_NAME = "fukuda-spray-tool-v6";
 const APP_FILES = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./script.js",
+  "./styles.css?v=6",
+  "./script.js?v=6",
   "./manifest.webmanifest"
 ];
 

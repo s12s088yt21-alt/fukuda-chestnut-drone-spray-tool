@@ -188,7 +188,7 @@ function calculate() {
     setText("timeBuffer", "対象外");
     setText("timeSetupCleanup", "対象外");
     setText("planTitle", "袋数・散布量の目安");
-    setText("updatedAt", "Web版 v5");
+    setText("updatedAt", "Web版 v6");
     document.getElementById("tankPlan").innerHTML = `
       <div class="tank-item">
         <div class="tank-label">全体</div>
@@ -239,7 +239,7 @@ function calculate() {
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
   setText("planTitle", "タンク別の作成量");
-  setText("updatedAt", "Web版 v5");
+  setText("updatedAt", "Web版 v6");
 
   document.getElementById("tankPlan").innerHTML = tankPlan.map((item) => `
     <div class="tank-item">
