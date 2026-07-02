@@ -33,12 +33,26 @@ const products = {
     name: "フェニックスフロアブル",
     purpose: "モモノゴマダラノメイガ・クスサン防除",
     target: "モモノゴマダラノメイガ、クスサン",
+    form: "liquid",
     dilution: 40,
     sprayLPer10a: 4,
     amountUnit: "L",
     condition: "40倍 / 2〜4L/10a / 収穫前日まで / 2回以内",
   },
+  potash: {
+    name: "塩化加里",
+    purpose: "加里成分の粒剤散布",
+    target: "施肥",
+    form: "granule",
+    granuleKgPer10a: 20,
+    packKg: 20,
+    amountUnit: "kg",
+    condition: "粒剤 / 20kg/10a",
+  },
 };
+
+products.zimandaisen.form = "liquid";
+products.diana.form = "liquid";
 
 const inputIds = Object.keys(defaults).filter((id) => id !== "product");
 const yen = new Intl.NumberFormat("ja-JP");
@@ -71,12 +85,14 @@ function selectedProduct() {
 }
 
 function standardSprayLabel(product) {
+  if (product.form === "granule") return `標準 ${product.granuleKgPer10a}kg/10a`;
   if (product.name === "フェニックスフロアブル") return "標準 4L/10a（登録 2〜4L/10a）";
   return `標準 ${product.sprayLPer10a}L/10a`;
 }
 
 function applyStandardValues() {
   const product = selectedProduct();
+  if (product.form === "granule") return;
   document.getElementById("sprayLPer10a").value = product.sprayLPer10a;
   document.getElementById("dilution").value = product.dilution;
 }
@@ -93,13 +109,17 @@ function updateStandardLabels() {
   const product = selectedProduct();
   const sprayInput = document.getElementById("sprayLPer10a");
   const dilutionInput = document.getElementById("dilution");
+  const granule = product.form === "granule";
 
   sprayInput.readOnly = true;
   dilutionInput.readOnly = true;
   sprayInput.closest(".input-row").classList.add("locked");
   dilutionInput.closest(".input-row").classList.add("locked");
+  document.getElementById("sprayInputGroup").hidden = granule;
+  document.getElementById("dilutionInputGroup").hidden = granule;
+  document.getElementById("tankInputGroup").hidden = granule;
   setText("sprayStandardLabel", standardSprayLabel(product));
-  setText("dilutionStandardLabel", `標準 ${product.dilution}倍`);
+  setText("dilutionStandardLabel", granule ? "" : `標準 ${product.dilution}倍`);
 }
 
 function buildTankPlan(totalSprayL, tankL, dilution) {
@@ -135,6 +155,52 @@ function calculate() {
   const areaA = areaHa * 100;
   const areaM2 = areaHa * 10000;
   const blocks10a = areaA / 10;
+
+  if (product.form === "granule") {
+    const totalGranuleKg = blocks10a * product.granuleKgPer10a;
+    const granuleGPerM2 = areaM2 > 0 ? (totalGranuleKg * 1000) / areaM2 : 0;
+    const bagCount = product.packKg ? totalGranuleKg / product.packKg : 0;
+
+    setText("totalSprayLabel", "粒剤合計");
+    setText("totalSpray", `${round(totalGranuleKg, 1)} kg`);
+    setText("totalChemicalLabel", `${product.packKg}kg袋数`);
+    setText("totalChemical", `${round(bagCount, 1)} 袋`);
+    setText("totalWaterLabel", "10aあたり");
+    setText("totalWater", `${product.granuleKgPer10a} kg`);
+    setText("turnCountLabel", "散布区画");
+    setText("turnCount", `${round(blocks10a, 1)} 区画`);
+    setText("sprayPerM2Label", "1m²あたり粒剤量");
+    setText("sprayPerM2", `${round(granuleGPerM2, 2)} g`);
+    setText("chemicalPerM2Label", "1aあたり粒剤量");
+    setText("chemicalPerM2", `${round(product.granuleKgPer10a / 10, 2)} kg`);
+    setText("chemicalPer10aLabel", "10aあたり粒剤量");
+    setText("chemicalPer10a", `${product.granuleKgPer10a} kg`);
+    setText("conditionLabel", "散布条件");
+    setText("productPurpose", product.purpose);
+    setText("productMeta", product.condition);
+    setText("productCondition", product.condition);
+    setText("areaDetail", `${round(areaHa, 2)} ha / ${round(areaA, 1)} a / 10a×${round(blocks10a, 1)}区画 / ${yen.format(Math.round(areaM2))} m²`);
+    setText("flightTime", "対象外");
+    setText("workTime", "対象外");
+    setText("timeAreaDetail", `${round(areaHa, 2)} ha / ${round(areaA, 1)} a / 10a×${round(blocks10a, 1)}区画`);
+    setText("timeTurnCount", "対象外");
+    setText("timeCapacity", "対象外");
+    setText("timeBuffer", "対象外");
+    setText("timeSetupCleanup", "対象外");
+    setText("planTitle", "袋数・散布量の目安");
+    setText("updatedAt", "Web版 v5");
+    document.getElementById("tankPlan").innerHTML = `
+      <div class="tank-item">
+        <div class="tank-label">全体</div>
+        <div>
+          <strong>${round(totalGranuleKg, 1)}kg</strong>
+          <div class="tank-detail">10aあたり${product.granuleKgPer10a}kg。${product.packKg}kg袋なら${round(bagCount, 1)}袋が目安。</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
   const totalSprayL = blocks10a * sprayLPer10a;
   const totalChemicalKg = totalSprayL / dilution;
   const totalWaterL = totalSprayL - totalChemicalKg;
@@ -146,13 +212,21 @@ function calculate() {
   const flightMin = (areaHa / haPerHour) * 60;
   const workMin = flightMin + tankCount * (refillMin + turnBufferMin) + setupCleanupMin;
 
+  setText("totalSprayLabel", "全体の完成薬液");
   setText("totalSpray", `${round(totalSprayL, 1)} L`);
+  setText("totalChemicalLabel", "必要薬剤量");
   setText("totalChemical", `${round(totalChemicalKg, 2)} ${product.amountUnit}`);
+  setText("totalWaterLabel", "水の目安");
   setText("totalWater", `約${round(totalWaterL, 1)} L`);
+  setText("turnCountLabel", "タンク回数");
   setText("turnCount", `${tankCount} 回`);
+  setText("sprayPerM2Label", "1m²あたり完成薬液");
   setText("sprayPerM2", `${round(sprayMlPerM2, 2)} mL`);
+  setText("chemicalPerM2Label", "1m²あたり薬剤量");
   setText("chemicalPerM2", `${round(chemicalGPerM2, 3)} ${product.amountUnit === "L" ? "mL" : "g"}`);
+  setText("chemicalPer10aLabel", "10aあたり薬剤量");
   setText("chemicalPer10a", `${round(chemicalKgPer10a, 3)} ${product.amountUnit}`);
+  setText("conditionLabel", "登録・使用条件");
   setText("productPurpose", product.purpose);
   setText("productMeta", product.condition);
   setText("productCondition", product.condition);
@@ -164,7 +238,8 @@ function calculate() {
   setText("timeCapacity", `${round(haPerHour, 1)} ha/時`);
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
-  setText("updatedAt", "Web版 v4");
+  setText("planTitle", "タンク別の作成量");
+  setText("updatedAt", "Web版 v5");
 
   document.getElementById("tankPlan").innerHTML = tankPlan.map((item) => `
     <div class="tank-item">
