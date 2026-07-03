@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="防除計算">
   <title>福田観光栗園 防除計算ツール</title>
-  <link rel="stylesheet" href="./styles.css?v=7">
+  <link rel="stylesheet" href="./styles.css?v=8">
   <link rel="manifest" href="./manifest.webmanifest">
 </head>
 <body>
@@ -43,7 +43,7 @@
           <span id="productMeta">10倍 / 8L/10a / 収穫7日前まで / 2回以内</span>
         </div>
 
-        <label id="sprayInputGroup">
+        <label>
           <span>圃場面積</span>
           <div class="input-row">
             <input type="number" id="areaHa" value="4" min="0" step="0.01" inputmode="decimal">
@@ -51,7 +51,7 @@
           </div>
         </label>
 
-        <label id="dilutionInputGroup">
+        <label id="sprayInputGroup">
           <span class="label-line">散布液量 <small id="sprayStandardLabel">標準 8L/10a</small></span>
           <div class="input-row">
             <input type="number" id="sprayLPer10a" value="8" min="0" step="0.1" inputmode="decimal" readonly>
@@ -59,7 +59,7 @@
           </div>
         </label>
 
-        <label id="tankInputGroup">
+        <label id="dilutionInputGroup">
           <span class="label-line">希釈倍率 <small id="dilutionStandardLabel">標準 10倍</small></span>
           <div class="input-row">
             <input type="number" id="dilution" value="10" min="1" step="1" inputmode="numeric" readonly>
@@ -67,7 +67,7 @@
           </div>
         </label>
 
-        <label>
+        <label id="tankInputGroup">
           <span>タンク容量</span>
           <div class="input-row">
             <input type="number" id="tankL" value="70" min="1" step="1" inputmode="numeric">
@@ -234,6 +234,6 @@
     </section>
   </main>
 
-  <script src="./script.js?v=7"></script>
+  <script src="./script.js?v=8"></script>
 </body>
 </html>

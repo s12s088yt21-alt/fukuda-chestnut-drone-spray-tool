@@ -115,9 +115,11 @@ function updateStandardLabels() {
   dilutionInput.readOnly = true;
   sprayInput.closest(".input-row").classList.add("locked");
   dilutionInput.closest(".input-row").classList.add("locked");
-  document.getElementById("sprayInputGroup").hidden = granule;
-  document.getElementById("dilutionInputGroup").hidden = granule;
-  document.getElementById("tankInputGroup").hidden = granule;
+  ["sprayInputGroup", "dilutionInputGroup", "tankInputGroup"].forEach((id) => {
+    const element = document.getElementById(id);
+    element.hidden = granule;
+    element.style.display = granule ? "none" : "";
+  });
   setText("sprayStandardLabel", standardSprayLabel(product));
   setText("dilutionStandardLabel", granule ? "" : `標準 ${product.dilution}倍`);
 }
@@ -188,7 +190,7 @@ function calculate() {
     setText("timeBuffer", "対象外");
     setText("timeSetupCleanup", "対象外");
     setText("planTitle", "袋数・散布量の目安");
-    setText("updatedAt", "Web版 v7");
+    setText("updatedAt", "Web版 v8");
     document.getElementById("tankPlan").innerHTML = `
       <div class="tank-item">
         <div class="tank-label">全体</div>
@@ -239,7 +241,7 @@ function calculate() {
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
   setText("planTitle", "タンク別の作成量");
-  setText("updatedAt", "Web版 v7");
+  setText("updatedAt", "Web版 v8");
 
   document.getElementById("tankPlan").innerHTML = tankPlan.map((item) => `
     <div class="tank-item">
