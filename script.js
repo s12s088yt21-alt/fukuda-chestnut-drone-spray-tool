@@ -40,14 +40,14 @@ const products = {
     condition: "40倍 / 2〜4L/10a / 収穫前日まで / 2回以内",
   },
   potash: {
-    name: "塩化加里",
-    purpose: "加里成分の粒剤散布",
+    name: "塩化加里（粒剤）",
+    purpose: "粒剤散布：塩化加里",
     target: "施肥",
     form: "granule",
     granuleKgPer10a: 20,
     packKg: 20,
     amountUnit: "kg",
-    condition: "粒剤 / 20kg/10a",
+    condition: "粒剤 / 20kg/10a / 希釈なし / 水なし",
   },
 };
 
@@ -161,11 +161,11 @@ function calculate() {
     const granuleGPerM2 = areaM2 > 0 ? (totalGranuleKg * 1000) / areaM2 : 0;
     const bagCount = product.packKg ? totalGranuleKg / product.packKg : 0;
 
-    setText("totalSprayLabel", "粒剤合計");
+    setText("totalSprayLabel", "粒剤の合計量");
     setText("totalSpray", `${round(totalGranuleKg, 1)} kg`);
     setText("totalChemicalLabel", `${product.packKg}kg袋数`);
     setText("totalChemical", `${round(bagCount, 1)} 袋`);
-    setText("totalWaterLabel", "10aあたり");
+    setText("totalWaterLabel", "粒剤 10aあたり");
     setText("totalWater", `${product.granuleKgPer10a} kg`);
     setText("turnCountLabel", "散布区画");
     setText("turnCount", `${round(blocks10a, 1)} 区画`);
@@ -175,7 +175,7 @@ function calculate() {
     setText("chemicalPerM2", `${round(product.granuleKgPer10a / 10, 2)} kg`);
     setText("chemicalPer10aLabel", "10aあたり粒剤量");
     setText("chemicalPer10a", `${product.granuleKgPer10a} kg`);
-    setText("conditionLabel", "散布条件");
+    setText("conditionLabel", "粒剤の散布条件");
     setText("productPurpose", product.purpose);
     setText("productMeta", product.condition);
     setText("productCondition", product.condition);
@@ -188,7 +188,7 @@ function calculate() {
     setText("timeBuffer", "対象外");
     setText("timeSetupCleanup", "対象外");
     setText("planTitle", "袋数・散布量の目安");
-    setText("updatedAt", "Web版 v6");
+    setText("updatedAt", "Web版 v7");
     document.getElementById("tankPlan").innerHTML = `
       <div class="tank-item">
         <div class="tank-label">全体</div>
@@ -239,7 +239,7 @@ function calculate() {
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
   setText("planTitle", "タンク別の作成量");
-  setText("updatedAt", "Web版 v6");
+  setText("updatedAt", "Web版 v7");
 
   document.getElementById("tankPlan").innerHTML = tankPlan.map((item) => `
     <div class="tank-item">
