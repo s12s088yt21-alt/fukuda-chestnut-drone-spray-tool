@@ -141,6 +141,32 @@ function buildTankPlan(totalSprayL, tankL, dilution) {
   return plan;
 }
 
+function coverageFromSpray(madeSprayL, sprayLPer10a) {
+  const blocks10a = sprayLPer10a > 0 ? madeSprayL / sprayLPer10a : 0;
+  const areaA = blocks10a * 10;
+  const areaHa = areaA / 100;
+  const areaM2 = areaA * 100;
+  const fullBlocks = Math.floor(blocks10a);
+  const remainderA = (blocks10a - fullBlocks) * 10;
+  return { blocks10a, areaA, areaHa, areaM2, fullBlocks, remainderA };
+}
+
+function areaDetail(areaHa, areaA, blocks10a, areaM2) {
+  return `${round(areaHa, 2)} ha / ${round(areaA, 1)} a / 10a×${round(blocks10a, 1)}区画 / ${yen.format(Math.round(areaM2))} m²`;
+}
+
+function tankAreaText(coverage) {
+  return `${yen.format(Math.round(coverage.areaM2))} m² / ${round(coverage.areaA, 1)} a / ${round(coverage.areaHa, 3)} ha`;
+}
+
+function tankDetail(tankPlan) {
+  if (tankPlan.length === 0) return "タンク回数なし";
+  const last = tankPlan[tankPlan.length - 1];
+  const base = `${tankPlan.length}回`;
+  if (tankPlan.length === 1) return `${base}。作成量は${round(last.amount, 1)}L。`;
+  return `${base}。最後は${round(last.amount, 1)}L。`;
+}
+
 function calculate() {
   const product = selectedProduct();
   applyStandardValues();
@@ -190,7 +216,8 @@ function calculate() {
     setText("timeBuffer", "対象外");
     setText("timeSetupCleanup", "対象外");
     setText("planTitle", "袋数・散布量の目安");
-    setText("updatedAt", "Web版 v8");
+    setText("updatedAt", "Web版 v12");
+    document.getElementById("sprayCheckPanel").hidden = true;
     document.getElementById("tankPlan").innerHTML = `
       <div class="tank-item">
         <div class="tank-label">全体</div>
@@ -203,6 +230,8 @@ function calculate() {
     return;
   }
 
+  document.getElementById("sprayCheckPanel").hidden = false;
+
   const totalSprayL = blocks10a * sprayLPer10a;
   const totalChemicalKg = totalSprayL / dilution;
   const totalWaterL = totalSprayL - totalChemicalKg;
@@ -211,6 +240,9 @@ function calculate() {
   const chemicalKgPer10a = sprayLPer10a / dilution;
   const tankPlan = buildTankPlan(totalSprayL, tankL, dilution);
   const tankCount = tankPlan.length;
+  const checkCoverage = coverageFromSpray(totalSprayL, sprayLPer10a);
+  const fullTankCoverage = coverageFromSpray(tankL, sprayLPer10a);
+  const detailText = areaDetail(areaHa, areaA, blocks10a, areaM2);
   const flightMin = (areaHa / haPerHour) * 60;
   const workMin = flightMin + tankCount * (refillMin + turnBufferMin) + setupCleanupMin;
 
@@ -232,7 +264,7 @@ function calculate() {
   setText("productPurpose", product.purpose);
   setText("productMeta", product.condition);
   setText("productCondition", product.condition);
-  setText("areaDetail", `${round(areaHa, 2)} ha / ${round(areaA, 1)} a / 10a×${round(blocks10a, 1)}区画 / ${yen.format(Math.round(areaM2))} m²`);
+  setText("areaDetail", detailText);
   setText("flightTime", formatMinutes(flightMin));
   setText("workTime", formatMinutes(workMin));
   setText("timeAreaDetail", `${round(areaHa, 2)} ha / ${round(areaA, 1)} a / 10a×${round(blocks10a, 1)}区画`);
@@ -241,7 +273,17 @@ function calculate() {
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
   setText("planTitle", "タンク別の作成量");
-  setText("updatedAt", "Web版 v8");
+  setText("updatedAt", "Web版 v12");
+  setText("sprayCheckStatus", "確認OK");
+  setText("sprayCheckSummary", `${round(areaHa, 2)}haに必要な完成薬液は${round(totalSprayL, 1)}Lです。この量で${round(checkCoverage.areaHa, 2)}ha散布できます。`);
+  setText("checkTargetArea", `${round(areaHa, 2)} ha`);
+  setText("checkPreparedSpray", `${round(totalSprayL, 1)} L`);
+  setText("checkCoverableArea", `${round(checkCoverage.areaHa, 2)} ha`);
+  setText("checkFullTankM2", `${yen.format(Math.round(fullTankCoverage.areaM2))} m²`);
+  setText("checkAreaDetail", detailText);
+  setText("checkFormula", `10a×${round(blocks10a, 1)}区画 × ${sprayLPer10a}L = ${round(totalSprayL, 1)}L`);
+  setText("checkTankDetail", `${tankL}Lタンクで${tankDetail(tankPlan)}`);
+  setText("checkFullTankDetail", `${tankL}L ÷ ${sprayLPer10a}L/10a = ${tankAreaText(fullTankCoverage)}`);
 
   document.getElementById("tankPlan").innerHTML = tankPlan.map((item) => `
     <div class="tank-item">
@@ -249,7 +291,7 @@ function calculate() {
       <div>
         <strong>完成薬液 ${round(item.amount, 1)}L</strong>
         <div class="tank-detail">
-          薬剤 ${round(item.chemicalKg, 2)}${product.amountUnit}、水は目安 ${round(item.waterL, 1)}L。水を先に入れて薬剤を少しずつ投入し、最後に完成薬液量へ合わせる。
+          この1回で約${round(coverageFromSpray(item.amount, sprayLPer10a).areaHa, 2)}ha分。薬剤 ${round(item.chemicalKg, 2)}${product.amountUnit}、水は目安 ${round(item.waterL, 1)}L。
         </div>
       </div>
     </div>

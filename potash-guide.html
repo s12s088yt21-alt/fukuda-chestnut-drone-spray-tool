@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#146c43">
+  <title>栗の夏肥 塩化加里の目安</title>
+  <style>
+    :root {
+      --bg: #f5f7f4;
+      --panel: #fff;
+      --text: #1f2a24;
+      --muted: #5d6b62;
+      --line: #dce4dc;
+      --accent: #146c43;
+      --accent-2: #0f766e;
+      --warn: #8a5a0a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Meiryo", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    main {
+      width: min(920px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 42px;
+    }
+
+    section {
+      margin-bottom: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 10px 28px rgba(31, 42, 36, 0.06);
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: clamp(28px, 6vw, 42px);
+      line-height: 1.15;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .lead {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .answer {
+      border-width: 2px;
+      border-color: #b7dcc6;
+      background: #f1f8f4;
+    }
+
+    .answer strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--accent);
+      font-size: clamp(34px, 8vw, 56px);
+      line-height: 1;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfb;
+    }
+
+    .card span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .card strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--accent);
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 11px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      width: 34%;
+      color: var(--muted);
+      text-align: left;
+    }
+
+    td {
+      font-weight: 700;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li + li {
+      margin-top: 6px;
+    }
+
+    .note {
+      color: var(--warn);
+      font-weight: 800;
+    }
+
+    a {
+      color: var(--accent-2);
+      font-weight: 800;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .button {
+      display: inline-block;
+      min-height: 44px;
+      padding: 9px 14px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      background: #fff;
+      color: var(--accent);
+    }
+
+    @media (max-width: 720px) {
+      main {
+        width: min(100% - 20px, 520px);
+        padding-top: 10px;
+      }
+
+      section {
+        padding: 14px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      th,
+      td {
+        display: block;
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      td {
+        padding-top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <p class="eyebrow">福田観光栗園 / 丹波栗 / 夏肥</p>
+      <h1>栗の夏肥 塩化加里の目安</h1>
+      <p class="lead">実を太らせるための加里は、木の年齢・実の量・樹勢で量を変える。若木や実の少ない木に多く入れる肥料ではない。</p>
+      <div class="actions">
+        <a class="button" href="./index.html">防除計算ツールへ戻る</a>
+        <a class="button secondary" href="#sources">根拠を見る</a>
+      </div>
+    </section>
+
+    <section class="answer">
+      <h2>標準目安</h2>
+      <p>土壌診断がない場合、夏の塩化加里はまずこの範囲で考える。</p>
+      <strong>2〜5kg / 10a</strong>
+      <p class="note">20kg/10aは、塩化加里単体としては標準より多い可能性が高い。</p>
+    </section>
+
+    <section>
+      <h2>木の状態別</h2>
+      <div class="cards">
+        <div class="card">
+          <span>若木・実が少ない</span>
+          <strong>0〜1kg/10a</strong>
+          <p>木を作る段階。加里を多く入れる意味は小さい。</p>
+        </div>
+        <div class="card">
+          <span>成木・普通</span>
+          <strong>2kg/10a前後</strong>
+          <p>土壌診断がない時の控えめな基準。</p>
+        </div>
+        <div class="card">
+          <span>成木・実が多い</span>
+          <strong>3〜5kg/10a</strong>
+          <p>結果量が多い場所は、実の肥大に合わせてやや多めに見る。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>なぜ加里を撒くか</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th>主な目的</th>
+            <td>実の肥大、糖やデンプンの移動、収穫期前の樹体消耗の補助。</td>
+          </tr>
+          <tr>
+            <th>必要になりやすい木</th>
+            <td>実が多く付いた成木、土壌診断で加里不足が出ている園。</td>
+          </tr>
+          <tr>
+            <th>多くいらない木</th>
+            <td>若木、実が少ない木、根が弱っている木、樹勢低下の原因が分からない木。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>20kg/10aを避けたい理由</h2>
+      <p>塩化加里は加里成分が約60%。つまり20kg/10a撒くと、加里成分として約12kg/10a入る。</p>
+      <ul>
+        <li>若木・実の少ない木には過剰になりやすい。</li>
+        <li>塩化加里は効きが早く、入れすぎると根に負担が出やすい。</li>
+        <li>樹勢が弱い原因が排水不良、pH、根傷み、窒素不足の場合、加里だけ増やしても解決しない。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>実務判断</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th>全園一律で撒く場合</th>
+            <td>まず2kg/10a程度。若木や弱い木は減らす。</td>
+          </tr>
+          <tr>
+            <th>実が多い場所だけ撒く場合</th>
+            <td>3〜5kg/10aを上限目安にする。</td>
+          </tr>
+          <tr>
+            <th>正確に決める場合</th>
+            <td>土壌診断、葉色、結果量、樹勢を見て、JA・普及センターに確認する。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="sources">
+      <h2>根拠・参考</h2>
+      <ul>
+        <li><a href="https://shop.takii.co.jp/simages/shop/selection/kuri1711.html">タキイ：栗の栽培方法</a> - 4年生以降の加里量、夏肥の比率。</li>
+        <li><a href="https://ja-aira.or.jp/wp-content/uploads/2018/07/09_kuriH31.pdf">JAあいら：クリの栽培・防除暦</a> - 成木の夏肥例。</li>
+        <li><a href="https://www.city.tambasasayama.lg.jp/material/files/group/19/sasayamasitannbagurisinnkoukeikaku.pdf">丹波篠山市：丹波栗振興計画</a> - 樹齢・樹勢に応じた施肥判断。</li>
+        <li><a href="https://bsikagaku.jp/f-knowledge/knowledge64.pdf">B.S.I.生物科学研究所：塩化加里</a> - 塩化加里の加里成分。</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

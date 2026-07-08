@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="防除計算">
   <title>福田観光栗園 防除計算ツール</title>
-  <link rel="stylesheet" href="./styles.css?v=8">
+  <link rel="stylesheet" href="./styles.css?v=12">
   <link rel="manifest" href="./manifest.webmanifest">
 </head>
 <body>
@@ -18,7 +18,10 @@
         <h1>防除計算ツール</h1>
         <p class="lead">薬剤・肥料、面積、散布条件を入れると、平米あたり・10aあたり・全体量・タンク回数・作業時間の目安を計算します。</p>
       </div>
-      <button class="print-button" type="button" id="printButton" aria-label="印刷">印刷</button>
+      <div class="intro-actions">
+        <a class="guide-link" href="./potash-guide.html">塩化加里の目安</a>
+        <button class="print-button" type="button" id="printButton" aria-label="印刷">印刷</button>
+      </div>
     </section>
 
     <section class="grid">
@@ -89,6 +92,54 @@
         </div>
 
         <div class="tab-panel active" id="liquidPanel" role="tabpanel" aria-labelledby="liquidTabButton">
+          <div class="spray-check" id="sprayCheckPanel">
+            <div class="spray-check-head">
+              <div>
+                <h2>散布確認</h2>
+                <p id="sprayCheckSummary">4haに必要な完成薬液は320Lです。この量で4ha散布できます。</p>
+              </div>
+              <strong id="sprayCheckStatus">確認OK</strong>
+            </div>
+            <div class="check-cards">
+              <article>
+                <span>散布したい面積</span>
+                <strong id="checkTargetArea">4 ha</strong>
+              </article>
+              <article>
+                <span>作る完成薬液</span>
+                <strong id="checkPreparedSpray">320 L</strong>
+              </article>
+              <article>
+                <span>その量で散布できる面積</span>
+                <strong id="checkCoverableArea">4 ha</strong>
+              </article>
+              <article>
+                <span>タンク満タン1杯で散布</span>
+                <strong id="checkFullTankM2">8,750 m²</strong>
+              </article>
+            </div>
+            <table>
+              <tbody>
+                <tr>
+                  <th>面積の内訳</th>
+                  <td id="checkAreaDetail">4 ha / 400 a / 10a×40区画 / 40,000 m²</td>
+                </tr>
+                <tr>
+                  <th>計算の見方</th>
+                  <td id="checkFormula">10a×40区画 × 8L = 320L</td>
+                </tr>
+                <tr>
+                  <th>タンクの見方</th>
+                  <td id="checkTankDetail">70Lタンクで5回。最後は40L。</td>
+                </tr>
+                <tr>
+                  <th>満タン1杯の面積</th>
+                  <td id="checkFullTankDetail">70L ÷ 8L/10a = 8,750m² / 87.5a / 0.875ha</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
           <div class="result-cards">
             <article>
               <span id="totalSprayLabel">全体の完成薬液</span>
@@ -234,6 +285,6 @@
     </section>
   </main>
 
-  <script src="./script.js?v=8"></script>
+  <script src="./script.js?v=12"></script>
 </body>
 </html>
