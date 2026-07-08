@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="防除計算">
   <title>福田観光栗園 防除計算ツール</title>
-  <link rel="stylesheet" href="./styles.css?v=12">
+  <link rel="stylesheet" href="./styles.css?v=13">
   <link rel="manifest" href="./manifest.webmanifest">
 </head>
 <body>
@@ -49,7 +49,7 @@
         <label>
           <span>圃場面積</span>
           <div class="input-row">
-            <input type="number" id="areaHa" value="4" min="0" step="0.01" inputmode="decimal">
+            <input type="number" id="areaHa" value="3.5" min="0" step="0.01" inputmode="decimal">
             <span>ha</span>
           </div>
         </label>
@@ -96,22 +96,22 @@
             <div class="spray-check-head">
               <div>
                 <h2>散布確認</h2>
-                <p id="sprayCheckSummary">4haに必要な完成薬液は320Lです。この量で4ha散布できます。</p>
+                <p id="sprayCheckSummary">3.5haに必要な完成薬液は280Lです。この量で3.5ha散布できます。</p>
               </div>
               <strong id="sprayCheckStatus">確認OK</strong>
             </div>
             <div class="check-cards">
               <article>
                 <span>散布したい面積</span>
-                <strong id="checkTargetArea">4 ha</strong>
+                <strong id="checkTargetArea">3.5 ha</strong>
               </article>
               <article>
                 <span>作る完成薬液</span>
-                <strong id="checkPreparedSpray">320 L</strong>
+                <strong id="checkPreparedSpray">280 L</strong>
               </article>
               <article>
                 <span>その量で散布できる面積</span>
-                <strong id="checkCoverableArea">4 ha</strong>
+                <strong id="checkCoverableArea">3.5 ha</strong>
               </article>
               <article>
                 <span>タンク満タン1杯で散布</span>
@@ -122,15 +122,15 @@
               <tbody>
                 <tr>
                   <th>面積の内訳</th>
-                  <td id="checkAreaDetail">4 ha / 400 a / 10a×40区画 / 40,000 m²</td>
+                  <td id="checkAreaDetail">3.5 ha / 350 a / 10a×35区画 / 35,000 m²</td>
                 </tr>
                 <tr>
                   <th>計算の見方</th>
-                  <td id="checkFormula">10a×40区画 × 8L = 320L</td>
+                  <td id="checkFormula">10a×35区画 × 8L = 280L</td>
                 </tr>
                 <tr>
                   <th>タンクの見方</th>
-                  <td id="checkTankDetail">70Lタンクで5回。最後は40L。</td>
+                  <td id="checkTankDetail">70Lタンクで4回。最後は70L。</td>
                 </tr>
                 <tr>
                   <th>満タン1杯の面積</th>
@@ -143,19 +143,19 @@
           <div class="result-cards">
             <article>
               <span id="totalSprayLabel">全体の完成薬液</span>
-              <strong id="totalSpray">320 L</strong>
+              <strong id="totalSpray">280 L</strong>
             </article>
             <article>
               <span id="totalChemicalLabel">必要薬剤量</span>
-              <strong id="totalChemical">32 kg</strong>
+              <strong id="totalChemical">28 kg</strong>
             </article>
             <article>
               <span id="totalWaterLabel">水の目安</span>
-              <strong id="totalWater">約288 L</strong>
+              <strong id="totalWater">約252 L</strong>
             </article>
             <article>
               <span id="turnCountLabel">タンク回数</span>
-              <strong id="turnCount">5 回</strong>
+              <strong id="turnCount">4 回</strong>
             </article>
           </div>
 
@@ -179,7 +179,7 @@
               </tr>
               <tr>
                 <th>散布面積</th>
-                <td id="areaDetail">4 ha / 400 a / 40区画 / 40,000 m²</td>
+                <td id="areaDetail">3.5 ha / 350 a / 35区画 / 35,000 m²</td>
               </tr>
             </tbody>
           </table>
@@ -247,11 +247,11 @@
                 <tbody>
                   <tr>
                     <th>散布面積</th>
-                    <td id="timeAreaDetail">4 ha / 400 a / 10a×40区画</td>
+                    <td id="timeAreaDetail">3.5 ha / 350 a / 10a×35区画</td>
                   </tr>
                   <tr>
                     <th>タンク回数</th>
-                    <td id="timeTurnCount">5 回</td>
+                    <td id="timeTurnCount">4 回</td>
                   </tr>
                   <tr>
                     <th>実散布の処理能力</th>
@@ -285,6 +285,6 @@
     </section>
   </main>
 
-  <script src="./script.js?v=12"></script>
+  <script src="./script.js?v=13"></script>
 </body>
 </html>

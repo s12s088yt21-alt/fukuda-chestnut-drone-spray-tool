@@ -1,6 +1,6 @@
 const defaults = {
   product: "zimandaisen",
-  areaHa: 4,
+  areaHa: 3.5,
   sprayLPer10a: 8,
   dilution: 10,
   tankL: 70,
@@ -216,7 +216,7 @@ function calculate() {
     setText("timeBuffer", "対象外");
     setText("timeSetupCleanup", "対象外");
     setText("planTitle", "袋数・散布量の目安");
-    setText("updatedAt", "Web版 v12");
+    setText("updatedAt", "Web版 v13");
     document.getElementById("sprayCheckPanel").hidden = true;
     document.getElementById("tankPlan").innerHTML = `
       <div class="tank-item">
@@ -273,7 +273,7 @@ function calculate() {
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
   setText("planTitle", "タンク別の作成量");
-  setText("updatedAt", "Web版 v12");
+  setText("updatedAt", "Web版 v13");
   setText("sprayCheckStatus", "確認OK");
   setText("sprayCheckSummary", `${round(areaHa, 2)}haに必要な完成薬液は${round(totalSprayL, 1)}Lです。この量で${round(checkCoverage.areaHa, 2)}ha散布できます。`);
   setText("checkTargetArea", `${round(areaHa, 2)} ha`);
