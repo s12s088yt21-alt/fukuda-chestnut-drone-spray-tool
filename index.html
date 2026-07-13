@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="防除計算">
   <title>福田観光栗園 防除計算ツール</title>
-  <link rel="stylesheet" href="./styles.css?v=13">
+  <link rel="stylesheet" href="./styles.css?v=14">
   <link rel="manifest" href="./manifest.webmanifest">
 </head>
 <body>
@@ -43,7 +43,7 @@
 
         <div class="product-info" id="productInfo">
           <strong id="productPurpose">実炭疽病防除</strong>
-          <span id="productMeta">10倍 / 8L/10a / 収穫7日前まで / 2回以内</span>
+          <span id="productMeta">計画 10倍 / 12L/10a（規定値8L/10aの1.5倍）/ 収穫7日前まで / 2回以内</span>
         </div>
 
         <label>
@@ -55,9 +55,9 @@
         </label>
 
         <label id="sprayInputGroup">
-          <span class="label-line">散布液量 <small id="sprayStandardLabel">標準 8L/10a</small></span>
+          <span class="label-line">散布液量 <small id="sprayStandardLabel">計画 12L/10a</small></span>
           <div class="input-row">
-            <input type="number" id="sprayLPer10a" value="8" min="0" step="0.1" inputmode="decimal" readonly>
+            <input type="number" id="sprayLPer10a" value="12" min="0" step="0.1" inputmode="decimal" readonly>
             <span>L/10a</span>
           </div>
         </label>
@@ -96,7 +96,7 @@
             <div class="spray-check-head">
               <div>
                 <h2>散布確認</h2>
-                <p id="sprayCheckSummary">3.5haに必要な完成薬液は280Lです。この量で3.5ha散布できます。</p>
+                <p id="sprayCheckSummary">3.5haに必要な完成薬液は420Lです。この量で3.5ha散布できます。</p>
               </div>
               <strong id="sprayCheckStatus">確認OK</strong>
             </div>
@@ -107,7 +107,7 @@
               </article>
               <article>
                 <span>作る完成薬液</span>
-                <strong id="checkPreparedSpray">280 L</strong>
+                <strong id="checkPreparedSpray">420 L</strong>
               </article>
               <article>
                 <span>その量で散布できる面積</span>
@@ -115,7 +115,7 @@
               </article>
               <article>
                 <span>タンク満タン1杯で散布</span>
-                <strong id="checkFullTankM2">8,750 m²</strong>
+                <strong id="checkFullTankM2">5,833 m²</strong>
               </article>
             </div>
             <table>
@@ -126,15 +126,15 @@
                 </tr>
                 <tr>
                   <th>計算の見方</th>
-                  <td id="checkFormula">10a×35区画 × 8L = 280L</td>
+                  <td id="checkFormula">10a×35区画 × 12L = 420L</td>
                 </tr>
                 <tr>
                   <th>タンクの見方</th>
-                  <td id="checkTankDetail">70Lタンクで4回。最後は70L。</td>
+                  <td id="checkTankDetail">70Lタンクで6回。最後は70L。</td>
                 </tr>
                 <tr>
                   <th>満タン1杯の面積</th>
-                  <td id="checkFullTankDetail">70L ÷ 8L/10a = 8,750m² / 87.5a / 0.875ha</td>
+                  <td id="checkFullTankDetail">70L ÷ 12L/10a = 5,833m² / 58.3a / 0.583ha</td>
                 </tr>
               </tbody>
             </table>
@@ -143,19 +143,19 @@
           <div class="result-cards">
             <article>
               <span id="totalSprayLabel">全体の完成薬液</span>
-              <strong id="totalSpray">280 L</strong>
+              <strong id="totalSpray">420 L</strong>
             </article>
             <article>
               <span id="totalChemicalLabel">必要薬剤量</span>
-              <strong id="totalChemical">28 kg</strong>
+              <strong id="totalChemical">42 kg</strong>
             </article>
             <article>
               <span id="totalWaterLabel">水の目安</span>
-              <strong id="totalWater">約252 L</strong>
+              <strong id="totalWater">約378 L</strong>
             </article>
             <article>
               <span id="turnCountLabel">タンク回数</span>
-              <strong id="turnCount">4 回</strong>
+              <strong id="turnCount">6 回</strong>
             </article>
           </div>
 
@@ -163,19 +163,19 @@
             <tbody>
               <tr>
                 <th id="sprayPerM2Label">1m²あたり完成薬液</th>
-                <td id="sprayPerM2">8 mL</td>
+                <td id="sprayPerM2">12 mL</td>
               </tr>
               <tr>
                 <th id="chemicalPerM2Label">1m²あたり薬剤量</th>
-                <td id="chemicalPerM2">0.8 g</td>
+                <td id="chemicalPerM2">1.2 g</td>
               </tr>
               <tr>
                 <th id="chemicalPer10aLabel">10aあたり薬剤量</th>
-                <td id="chemicalPer10a">0.8 kg</td>
+                <td id="chemicalPer10a">1.2 kg</td>
               </tr>
               <tr>
                 <th id="conditionLabel">登録・使用条件</th>
-                <td id="productCondition">10倍 / 8L/10a / 収穫7日前まで / 2回以内</td>
+                <td id="productCondition">計画 10倍 / 12L/10a（規定値8L/10aの1.5倍）/ 収穫7日前まで / 2回以内</td>
               </tr>
               <tr>
                 <th>散布面積</th>
@@ -235,11 +235,11 @@
               <div class="result-cards time-cards">
                 <article>
                   <span>実散布時間</span>
-                  <strong id="flightTime">約2時間00分</strong>
+                  <strong id="flightTime">約1時間45分</strong>
                 </article>
                 <article>
                   <span>補給・段取り込み</span>
-                  <strong id="workTime">約3時間15分</strong>
+                  <strong id="workTime">約4時間15分</strong>
                 </article>
               </div>
 
@@ -251,7 +251,7 @@
                   </tr>
                   <tr>
                     <th>タンク回数</th>
-                    <td id="timeTurnCount">4 回</td>
+                    <td id="timeTurnCount">6 回</td>
                   </tr>
                   <tr>
                     <th>実散布の処理能力</th>
@@ -285,6 +285,6 @@
     </section>
   </main>
 
-  <script src="./script.js?v=13"></script>
+  <script src="./script.js?v=14"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 const defaults = {
   product: "zimandaisen",
   areaHa: 3.5,
-  sprayLPer10a: 8,
+  sprayLPer10a: 12,
   dilution: 10,
   tankL: 70,
   haPerHour: 2,
@@ -16,18 +16,18 @@ const products = {
     purpose: "くりの実炭疽病防除",
     target: "実炭疽病",
     dilution: 10,
-    sprayLPer10a: 8,
+    sprayLPer10a: 12,
     amountUnit: "kg",
-    condition: "10倍 / 8L/10a / 収穫7日前まで / 2回以内",
+    condition: "計画 10倍 / 12L/10a（規定値8L/10aの1.5倍）/ 収穫7日前まで / 2回以内",
   },
   diana: {
     name: "ディアナWDG",
     purpose: "モモノゴマダラノメイガ防除",
     target: "モモノゴマダラノメイガ",
     dilution: 100,
-    sprayLPer10a: 2,
+    sprayLPer10a: 3,
     amountUnit: "kg",
-    condition: "100倍 / 2L/10a / 収穫前日まで / 2回以内",
+    condition: "計画 100倍 / 3L/10a（規定値2L/10aの1.5倍）/ 収穫前日まで / 2回以内",
   },
   phoenix: {
     name: "フェニックスフロアブル",
@@ -35,19 +35,19 @@ const products = {
     target: "モモノゴマダラノメイガ、クスサン",
     form: "liquid",
     dilution: 40,
-    sprayLPer10a: 4,
+    sprayLPer10a: 6,
     amountUnit: "L",
-    condition: "40倍 / 2〜4L/10a / 収穫前日まで / 2回以内",
+    condition: "計画 40倍 / 6L/10a（規定値4L/10aの1.5倍）/ 収穫前日まで / 2回以内",
   },
   potash: {
     name: "塩化加里（粒剤）",
     purpose: "粒剤散布：塩化加里",
     target: "施肥",
     form: "granule",
-    granuleKgPer10a: 20,
+    granuleKgPer10a: 10,
     packKg: 20,
     amountUnit: "kg",
-    condition: "粒剤 / 20kg/10a / 希釈なし / 水なし",
+    condition: "粒剤 / 10kg/10a / 希釈なし / 水なし",
   },
 };
 
@@ -85,9 +85,9 @@ function selectedProduct() {
 }
 
 function standardSprayLabel(product) {
-  if (product.form === "granule") return `標準 ${product.granuleKgPer10a}kg/10a`;
-  if (product.name === "フェニックスフロアブル") return "標準 4L/10a（登録 2〜4L/10a）";
-  return `標準 ${product.sprayLPer10a}L/10a`;
+  if (product.form === "granule") return `計画 ${product.granuleKgPer10a}kg/10a`;
+  if (product.name === "フェニックスフロアブル") return "計画 6L/10a（規定値4L/10aの1.5倍）";
+  return `計画 ${product.sprayLPer10a}L/10a`;
 }
 
 function applyStandardValues() {
@@ -216,7 +216,7 @@ function calculate() {
     setText("timeBuffer", "対象外");
     setText("timeSetupCleanup", "対象外");
     setText("planTitle", "袋数・散布量の目安");
-    setText("updatedAt", "Web版 v13");
+    setText("updatedAt", "Web版 v14");
     document.getElementById("sprayCheckPanel").hidden = true;
     document.getElementById("tankPlan").innerHTML = `
       <div class="tank-item">
@@ -273,7 +273,7 @@ function calculate() {
   setText("timeBuffer", `${round(refillMin + turnBufferMin, 1)} 分/回`);
   setText("timeSetupCleanup", `${round(setupCleanupMin, 1)} 分`);
   setText("planTitle", "タンク別の作成量");
-  setText("updatedAt", "Web版 v13");
+  setText("updatedAt", "Web版 v14");
   setText("sprayCheckStatus", "確認OK");
   setText("sprayCheckSummary", `${round(areaHa, 2)}haに必要な完成薬液は${round(totalSprayL, 1)}Lです。この量で${round(checkCoverage.areaHa, 2)}ha散布できます。`);
   setText("checkTargetArea", `${round(areaHa, 2)} ha`);
