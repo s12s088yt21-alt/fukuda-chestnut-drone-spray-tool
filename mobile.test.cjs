@@ -19,7 +19,7 @@ test('オフライン配信はこのアプリの資産に限定し、他アプ�
  const events={},deleted=[],cached=new Map();let fetched=0;
  const scope='https://example.com/drone/';
  const cache={addAll:async paths=>{for(const path of paths){const url=new URL(path,scope).href;cached.set(url,{url});}},match:async url=>cached.get(url)};
- const context={URL,Set,Promise,self:{registration:{scope},addEventListener:(name,fn)=>events[name]=fn,skipWaiting:async()=>{},clients:{claim:async()=>{}}},caches:{open:async()=>cache,keys:async()=>['unrelated-cache','fukuda-spray-tool-v22','fukuda-spray-tool-v23'],delete:async key=>deleted.push(key)},fetch:async()=>{fetched++;throw Error('offline');}};
+ const context={URL,Set,Promise,self:{registration:{scope},addEventListener:(name,fn)=>events[name]=fn,skipWaiting:async()=>{},clients:{claim:async()=>{}}},caches:{open:async()=>cache,keys:async()=>['unrelated-cache','fukuda-spray-tool-v22','fukuda-spray-tool-v24'],delete:async key=>deleted.push(key)},fetch:async()=>{fetched++;throw Error('offline');}};
  vm.runInNewContext(fs.readFileSync('sw.js','utf8'),context);
  let pending;events.install({waitUntil:p=>pending=p});await pending;
  events.activate({waitUntil:p=>pending=p});await pending;

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fukuda-spray-tool-v23';
+const CACHE_NAME = 'fukuda-spray-tool-v24';
 const APP_FILES = ['./', './index.html', './records.html', './manifest.webmanifest',
   './records.css', './records-core.js', './records.js', './workflow-core.js',
   './workflow.js', './workflow.css', './workflow-data.js', './mobile.js',
