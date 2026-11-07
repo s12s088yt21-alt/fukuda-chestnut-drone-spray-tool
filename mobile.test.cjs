@@ -1,0 +1,31 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const {execFileSync}=require('node:child_process');
+test('公開用ファイルに私用ログを含めず、全PWA資産をそろえる',()=>{
+ execFileSync('python3',['build-public.py']);
+ const context={window:{}};vm.runInNewContext(fs.readFileSync('public-dist/workflow-data.js','utf8'),context);
+ assert.equal(context.window.DroneReference.history.length,0);
+ assert.equal(context.window.DroneReference.manual.pages.length,19);
+ assert.doesNotMatch(fs.readFileSync('public-dist/workflow-data.js','utf8'),/1414|フェニクス/);
+ const manifest=JSON.parse(fs.readFileSync('public-dist/manifest.webmanifest'));
+ for(const icon of manifest.icons)assert.ok(fs.existsSync('public-dist/'+icon.src));
+ assert.equal(manifest.start_url,'./records.html');
+ assert.equal(manifest.display,'standalone');
+ assert.equal(fs.readdirSync('public-dist').length,16);
+});
+test('オフライン配信はこのアプリの資産に限定し、他アプリのキャッシュを保持',async()=>{
+ const events={},deleted=[],cached=new Map();let fetched=0;
+ const scope='https://example.com/drone/';
+ const cache={addAll:async paths=>{for(const path of paths){const url=new URL(path,scope).href;cached.set(url,{url});}},match:async url=>cached.get(url)};
+ const context={URL,Set,Promise,self:{registration:{scope},addEventListener:(name,fn)=>events[name]=fn,skipWaiting:async()=>{},clients:{claim:async()=>{}}},caches:{open:async()=>cache,keys:async()=>['unrelated-cache','fukuda-spray-tool-v22','fukuda-spray-tool-v23'],delete:async key=>deleted.push(key)},fetch:async()=>{fetched++;throw Error('offline');}};
+ vm.runInNewContext(fs.readFileSync('sw.js','utf8'),context);
+ let pending;events.install({waitUntil:p=>pending=p});await pending;
+ events.activate({waitUntil:p=>pending=p});await pending;
+ assert.deepEqual(deleted,['fukuda-spray-tool-v22']);
+ let response;events.fetch({request:{method:'GET',url:scope+'records.html?launch=home'},respondWith:p=>response=p});
+ assert.equal((await response).url,scope+'records.html');assert.equal(fetched,0);
+ let intercepted=false;events.fetch({request:{method:'GET',url:'https://other.example/private'},respondWith:()=>intercepted=true});assert.equal(intercepted,false);
+ for(const url of cached.keys())assert.ok(fs.existsSync('public-dist/'+(new URL(url).pathname.replace('/drone/','')||'index.html')));
+});

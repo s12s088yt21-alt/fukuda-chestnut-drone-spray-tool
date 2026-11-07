@@ -1,38 +1,24 @@
-const CACHE_NAME = "fukuda-spray-tool-v14";
-const APP_FILES = [
-  "./",
-  "./index.html",
-  "./styles.css?v=14",
-  "./script.js?v=14",
-  "./potash-guide.html",
-  "./manifest.webmanifest"
-];
-
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_FILES))
-  );
-  self.skipWaiting();
+const CACHE_NAME = 'fukuda-spray-tool-v23';
+const APP_FILES = ['./', './index.html', './records.html', './manifest.webmanifest',
+  './records.css', './records-core.js', './records.js', './workflow-core.js',
+  './workflow.js', './workflow.css', './workflow-data.js', './mobile.js',
+  './icon-180.png', './icon-192.png', './icon-512.png'];
+const APP_URLS = new Set(APP_FILES.map(path => new URL(path, self.registration.scope).href));
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));
 });
-
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
-    )
-  );
-  self.clients.claim();
+self.addEventListener('activate', event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys
+    .filter(key => key.startsWith('fukuda-spray-tool-') && key !== CACHE_NAME)
+    .map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
-
-self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        return response;
-      })
-      .catch(() => caches.match(event.request))
-  );
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url); url.search = ''; url.hash = '';
+  if (!APP_URLS.has(url.href)) return;
+  // インストール時に一式そろえた版を配信し、圏外でも同じ画面を開く。
+  event.respondWith(caches.open(CACHE_NAME).then(async cache => {
+    const cached = await cache.match(url.href);
+    return cached || fetch(event.request);
+  }));
 });

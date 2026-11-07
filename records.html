@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173f35">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ドローン作業">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <title>栗園のドローン作業</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="records.css">
+  <link rel="stylesheet" href="workflow.css">
+</head>
+<body>
+<header><div class="wrap header-inner"><div><p class="eyebrow">福田観光栗園 / T70P</p><h1>ドローン作業</h1><p>準備から記録まで、ここで。</p></div><span class="local-badge">この端末に保存</span></div></header>
+<nav class="main-nav wrap" aria-label="画面を選ぶ">
+  <button type="button" data-screen="today" aria-pressed="true">今日の作業</button>
+  <button type="button" data-screen="history" aria-pressed="false">過去の作業</button>
+  <button type="button" data-screen="guide" aria-pressed="false">操作を調べる</button>
+</nav>
+<main class="wrap">
+<details class="panel install-help"><summary>iPhoneで使う・データを移す</summary><ol><li>Safariでこのページを開き、共有メニューの「ホーム画面に追加」を選びます。</li><li>追加したアイコンから開いて、作業を入力してください。</li><li>Macの記録を移す場合は、Macの「過去の作業」から全記録を書き出し、AirDropや「ファイル」でiPhoneに送って、下の読み込みから取り込みます。</li></ol><p class="hint">Mac・Safari・ホーム画面のアプリで保存先が分かれる場合があります。使う画面を決め、記録は定期的に書き出してください。端末間の自動同期はありません。</p><p id="offlineStatus" role="status">オフライン準備を確認しています…</p></details>
+<div id="storageError" class="error" role="alert" hidden></div>
+<p id="message" role="status" aria-live="polite"></p>
+<div id="screen-today" class="screen">
+  <section class="start-card"><div><span class="eyebrow">今日の作業を始める</span><p id="currentSummary">新しい作業</p></div><div class="actions"><button id="copyRecord" type="button">前回と同じ内容で始める</button><button id="newRecord" type="button" class="secondary">空欄から始める</button></div></section>
+  <nav class="steps" aria-label="作業の進み方">
+    <button type="button" data-step="prepare" aria-pressed="true"><span>1</span> 準備する</button>
+    <button type="button" data-step="work" aria-pressed="false"><span>2</span> 作業する</button>
+    <button type="button" data-step="finish" aria-pressed="false"><span>3</span> 記録する</button>
+  </nav>
+  <form id="recordForm" novalidate>
+  <div id="step-prepare" class="step-view">
+    <section class="panel"><div class="bar"><h2>薬剤と送信機の設定</h2><span id="recordStatus" class="badge">記録中</span></div><p class="hint">いつもの値を呼び出し、変わったところだけ入力します。</p><div id="basicFields" class="fields"></div><p class="hint">設定を変更すると確認ボタンは未確認に戻ります。</p></section>
+    <section class="panel"><h2>用意する量</h2><p class="hint">上の散布量から、そのまま計算します。面積は全域の広さを一度入れて、次回へ引き継げます。</p><div class="fields" id="calculationFields"></div><div id="preparationResult" class="result-cards" aria-live="polite"></div><div id="tankSummary"></div><details id="timeDetails"><summary>作業時間の目安も計算する</summary><div id="timeFields" class="fields"></div><p id="timeResult"></p></details></section>
+    <details class="panel"><summary>その他の機体設定</summary><div id="extraBasicFields" class="fields"></div><div id="settingFields" class="fields"></div></details>
+  </div>
+  <div id="step-work" class="step-view" hidden>
+    <section class="panel"><div class="bar"><h2>現場で確認する</h2><span id="progress" class="badge"></span></div><p class="hint">項目ごとに内容を開いて確認。確認時刻も記録します。</p><div id="checklist"></div></section>
+  </div>
+  <div id="step-finish" class="step-view" hidden>
+    <section class="panel"><h2>実際に散布した量を残す</h2><div id="resultFields" class="fields"></div><details><summary>作業時間・天候も残す</summary><div id="resultDetailFields" class="fields"></div></details><div id="actualComparison" class="comparison" aria-live="polite"></div></section>
+    <details class="panel" id="invoiceDetails"><summary>受託した作業の請求書を作る</summary><p class="hint">作業日・薬剤・面積・実績はこの記録から入ります。自分の園地の作業なら入力は不要です。</p><div id="invoiceFields" class="fields"></div><details><summary>費用の内訳・支払先</summary><div id="invoiceExtraFields" class="fields"></div></details><p id="invoiceTotal" class="invoice-total"></p><button type="button" id="previewInvoice">請求書と作業報告を確認</button></details>
+    <button id="finishRecord" class="finish-button" type="button">今日の記録を終える</button>
+  </div>
+  <div class="savebar"><span id="saveStatus" role="status">未保存</span><button id="saveRecord" type="button" class="secondary">保存</button><button id="nextStep" type="button">現場の確認へ →</button></div>
+  </form>
+</div>
+<div id="screen-history" class="screen" hidden>
+  <section class="panel"><h2>保存した作業</h2><label>作業を探す<input id="historySearch" type="search" placeholder="薬剤名や日付"></label><label class="visually-hidden">保存した記録<select id="recordPicker"><option value="">新しい記録</option></select></label><div id="historyList" class="history-list"></div></section>
+  <details class="panel" id="historicalPanel"><summary>2026年の機体ログを見る</summary><p class="hint">取得済み126タスク。タスクを日付ごとにまとめています。面積は累計作業面積なので、重ねて飛んだ範囲を含みます。</p><p class="hint">原本面積は送信機で確認したムーから換算。実際の離着陸回数や設定用量は、この集計から確定できません。</p><div id="historicalList"></div></details>
+  <details class="panel"><summary>記録のバックアップ・読み込み</summary><p class="hint">保存先はこの端末・ブラウザです。別の端末へ移すときや、ブラウザのデータ削除前に書き出してください。</p><div class="actions"><button id="shareRecords" type="button" hidden>記録を共有・ファイルに保存</button><button id="exportRecords" type="button">全記録を書き出す</button><label class="file-button">バックアップを読み込む<input id="importRecords" type="file" accept=".json,application/json"></label></div></details>
+</div>
+<div id="screen-guide" class="screen" hidden>
+  <section class="panel"><h2>操作を調べる</h2><p class="hint">2026年11月1日改訂の手順書をまとめました。作業中の確認ボタンと同じ内容を、詳しく調べられます。</p><label>知りたい操作<input id="guideSearch" type="search" placeholder="例　マッピング、校正、中断、帰還"></label><div id="manualList"></div></section>
+</div>
+</main>
+<dialog id="invoiceDialog"><div class="dialog-toolbar"><button type="button" id="closeInvoice" class="secondary">閉じる</button><button type="button" id="printInvoice">印刷・PDF保存</button></div><article id="invoiceDocument"></article></dialog>
+<script src="workflow-core.js"></script>
+<script src="records-core.js"></script>
+<script src="records.js"></script>
+<script src="workflow-data.js"></script>
+<script src="workflow.js"></script>
+<script src="mobile.js"></script>
+</body>
+</html>

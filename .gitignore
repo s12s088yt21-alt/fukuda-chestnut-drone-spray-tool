@@ -1,2 +1,7 @@
 .DS_Store
 node_modules/
+__pycache__/
+
+# 取得した私用の原本・機体実績は公開リポジトリへ含めない
+workflow-data.js
+public-dist/
